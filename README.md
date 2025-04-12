@@ -77,8 +77,8 @@ If you want to work on the code base, follow these steps:
  ```
 
 #### Frontend Setup
-1. Install Dependencies:
-- Navigate to the `frontend/main-frontend` directory and run:
+ 1. Install Dependencies:
+ - Navigate to the `frontend/main-frontend` directory and run:
  ```bash
  npm install
  ```
