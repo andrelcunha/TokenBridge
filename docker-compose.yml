@@ -1,2 +1,3 @@
 include:
   - ./auth-service/docker-compose.yml
+  - ./task-service/docker-compose.yml
