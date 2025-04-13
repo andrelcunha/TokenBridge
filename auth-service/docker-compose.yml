@@ -1,0 +1,12 @@
+include:
+  - ../postgres/docker-compose.yml
+services:
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+    container_name: auth-service
+    ports:
+      - "8001:8000"
