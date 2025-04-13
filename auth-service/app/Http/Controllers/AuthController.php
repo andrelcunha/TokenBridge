@@ -35,6 +35,12 @@ class AuthController extends Controller
             return response()->json(['error' => 'Invalid credentials'], 401);
         }
 
+        $jwt = AuthController::generate($user);
+        return response()->json(['token' => $jwt]);
+    }
+
+    private static function generate($user)
+    {
         $payload = [
             'iss' => "auth-service", // Issuer
             'sub' => $user->id,      // Subject (user ID)
@@ -45,8 +51,7 @@ class AuthController extends Controller
         ];
 
         $jwt = JWT::encode($payload, env('JWT_SECRET'), 'HS256');
-        return response()->json(['token' => $jwt]);
+        return $jwt;
     }
-
     
 }
