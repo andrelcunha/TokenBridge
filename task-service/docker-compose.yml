@@ -1,12 +1,12 @@
-include:
-  - ../postgres/docker-compose.yml
-services:
-  task-service:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - postgres
-    container_name: task-service
-    ports:
-      - "8002:8000"
+# include:
+#   - ../postgres/docker-compose.yml
+# services:
+#   task-service:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     depends_on:
+#       - postgres
+#     container_name: task-service
+#     ports:
+#       - "8002:8000"
