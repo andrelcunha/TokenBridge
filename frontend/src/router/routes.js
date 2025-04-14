@@ -7,6 +7,13 @@ const routes = [
     ]
   },
   {
+    path: '/register',
+    component: () => import('layouts/MinimumLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/RegistrationPage.vue') }
+    ]
+  },
+  {
     path: '/tasks',
     component: () => import('layouts/MinimumLayout.vue'),
     children: [

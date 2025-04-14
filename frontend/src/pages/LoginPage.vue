@@ -11,11 +11,15 @@
           <q-btn @click="login" label="Login" color="primary" />
         </q-card-actions>
       </q-card>
+      <div class="q-my-md">
+        <q-btn flat label="Don't have an account yet? Sign up now!" @click="goToRegister" />
+      </div>
     </div>
   </q-page>
 </template>
 
 <script>
+
 import axios from 'axios';
 export default {
   name: 'LoginPage',
@@ -37,6 +41,9 @@ export default {
       } catch (error) {
         console.error('Login failed:', error);
       }
+    },
+    goToRegister() {
+      window.location.href = '/register';
     },
   },
 };
