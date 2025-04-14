@@ -1,6 +1,6 @@
 # TokenBridge Frontend (frontend)
 
-A frontend to TokenBridge PoC
+A Quasar frontend for the PoC TokenBridge
 
 ## Install the dependencies
 ```bash

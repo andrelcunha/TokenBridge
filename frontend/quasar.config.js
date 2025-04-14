@@ -1,7 +1,7 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file
 
-import { defineConfig } from '#q-app/wrappers';
+import { defineConfig } from '#q-app/wrappers'
 
 export default defineConfig((/* ctx */) => {
   return {
@@ -12,6 +12,7 @@ export default defineConfig((/* ctx */) => {
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
     boot: [
+      'axios'
     ],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#css
@@ -40,12 +41,6 @@ export default defineConfig((/* ctx */) => {
         node: 'node20'
       },
 
-      typescript: {
-        strict: true,
-        vueShim: true
-        // extendTsConfig (tsConfig) {}
-      },
-
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
@@ -67,9 +62,8 @@ export default defineConfig((/* ctx */) => {
       
       vitePlugins: [
         ['vite-plugin-checker', {
-          vueTsc: true,
           eslint: {
-            lintCommand: 'eslint -c ./eslint.config.js "./src*/**/*.{ts,js,mjs,cjs,vue}"',
+            lintCommand: 'eslint -c ./eslint.config.js "./src*/**/*.{js,mjs,cjs,vue}"',
             useFlatConfig: true
           }
         }, { server: false }]
@@ -215,4 +209,4 @@ export default defineConfig((/* ctx */) => {
       extraScripts: []
     }
   }
-});
+})
