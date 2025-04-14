@@ -3,8 +3,10 @@ include:
 services:
   auth-service:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../
+      dockerfile: auth-service/Dockerfile
+    volumes:
+      - ../shared:/var/www/shared
     depends_on:
       - postgres
     container_name: auth-service
