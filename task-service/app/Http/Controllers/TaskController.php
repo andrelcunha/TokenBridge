@@ -12,8 +12,7 @@ class TaskController extends Controller
      */
     public function index(Request $request)
     {
-        $decodedUser = $request->attributes->get('user');
-        $userId = $decodedUser->sub;
+        $userId = TaskController::getUserId($request);
 
         $tasks = Task::where('user_id', $userId)->get();
         return response()->json($tasks);
@@ -108,7 +107,7 @@ class TaskController extends Controller
     private static function getUserId(Request $request)
     {
         $decodedUser = $request->attributes->get('user');
-        $userId = $decodedUser->sub;
+        $userId = $decodedUser->id;
         return $userId;
     }
 }

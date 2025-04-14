@@ -6,6 +6,7 @@ use Closure;
 use Shared\TokenValidator;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Shared\DTO\UserDTO;
 
 class ValidateTokenMiddleware
 {
@@ -28,7 +29,9 @@ class ValidateTokenMiddleware
             return response()->json(['error' => 'Invalid token'], 401);
         }
 
-        $request->attributes->add(['user' => $decoded]);
+        $userDTO = UserDTO::fromJson($decoded->userJson);
+
+        $request->attributes->add(['user' => $userDTO]);
         return $next($request);
     }
 }

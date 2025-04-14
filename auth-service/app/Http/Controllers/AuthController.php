@@ -7,6 +7,7 @@ use Firebase\JWT\Key;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Shared\DTO\UserDTO;
 
 class AuthController extends Controller
 {
@@ -41,6 +42,7 @@ class AuthController extends Controller
 
     private static function generate($user)
     {
+        $userDTO = new UserDTO($user->id, $user->name, $user->email);
         $payload = [
             'iss' => "auth-service", // Issuer
             'sub' => $user->id,      // Subject (user ID)
@@ -48,6 +50,7 @@ class AuthController extends Controller
             'role' => $user->role,
             'iat' => time(),         // Issued at
             'exp' => time() + env('JWT_EXPIRATION'), // Expiration
+            'userJson' => $userDTO->toJson(),
         ];
 
         $jwt = JWT::encode($payload, env('JWT_SECRET'), 'HS256');
