@@ -14,7 +14,12 @@ WORKDIR /var/www
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Copy the application code (including artisan)
-COPY . .
+COPY task-service .
+COPY shared /var/shared
+
+# Rename .env.production to .env
+RUN cp .env.production .env
+
 
 # Install Laravel dependencies
 RUN composer install --no-dev --prefer-dist --no-interaction
