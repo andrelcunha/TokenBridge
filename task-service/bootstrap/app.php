@@ -3,6 +3,9 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use \App\Http\Middleware\ValidateTokenMiddleware;
+use Illuminate\Validation\ValidationException;
+
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -12,8 +15,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+
+            'validateToken' => ValidateTokenMiddleware::class,
+        
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->render(function (ValidationException $e) {
+            return response()->json([
+                'errors' => $e->errors()
+            ], 422);
+        });
     })->create();
