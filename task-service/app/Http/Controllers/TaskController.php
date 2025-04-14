@@ -10,9 +10,13 @@ class TaskController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Task::all());
+        $decodedUser = $request->attributes->get('user');
+        $userId = $decodedUser->sub;
+
+        $tasks = Task::where('user_id', $userId)->get();
+        return response()->json($tasks);
     }
 
     /**
@@ -20,6 +24,8 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
+        $userId = TaskController::getUserId($request);
+
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'string|nullable',
@@ -27,8 +33,11 @@ class TaskController extends Controller
             'due_date' => 'date|nullable',
             'user_id' => 'required|integer',
         ]);
+        if ($validated['user_id'] != $userId) {
+            return response()->json(['error' => 'User id mismatch'], 400);
+        }
 
-        $task = Task::create($validated);
+        $task = Task::create(array_merge($validated, ['user_id' => $userId]));
         return response()->json($task, 201);
     }
 
@@ -41,6 +50,12 @@ class TaskController extends Controller
         if (!$task) {
             return response()->json(['error' => 'Task not found'], 404);
         }
+        
+        $userId = TaskController::getUserId($request);
+        if ($task->user_id != $userId) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+        
         return response()->json($task);
     }
 
@@ -52,6 +67,11 @@ class TaskController extends Controller
         $task = Task::find($id);
         if (!$task) {
             return response()->json(['error' => 'Task not found'], 404);
+        }
+
+        $userId = TaskController::getUserId($request);
+        if ($task->user_id != $userId) {
+            return response()->json(['error' => 'Forbidden'], 403);
         }
 
         $validated = $request->validate([
@@ -76,7 +96,19 @@ class TaskController extends Controller
             return response()->json(['error' => 'Task not found'], 404);
         }
 
+        $userId = TaskController::getUserId($request);
+        if ($task->user_id != $userId) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
         $task->delete();
         return response()->json(['message' => 'Task deleted successfully']);
+    }
+
+    private static function getUserId(Request $request)
+    {
+        $decodedUser = $request->attributes->get('user');
+        $userId = $decodedUser->sub;
+        return $userId;
     }
 }
