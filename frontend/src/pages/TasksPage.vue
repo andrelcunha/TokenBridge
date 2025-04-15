@@ -1,34 +1,37 @@
 <script>
 import { ref } from 'vue';
 import axios from 'axios';
+import { Task } from 'src/models/Task';
 
 export default {
   name: 'TasksPage',
   setup() {
     const tasks = ref([]);
     const dialogOpen = ref(false);
-    const taskName = ref('');
+    const taskTitle = ref('');
     const selectedTask = ref(null);
 
     const fetchTasks = async () => {
       const token = getCookie('token');
       try {
-        console.log('Token:', token);
         const response = await axios.get('http://localhost:8002/api/tasks', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        tasks.value = response.data;
+        tasks.value = response.data.map(
+          (task) => new Task(task.id, task.title, task.description, task.status, task.user_id)
+        );
+
       } catch (error) {
         console.error('Error fetching tasks:', error);
       }
     };
 
-    const addTask = async (taskName) => {
+    const addTask = async (taskTitle) => {
       const token = getCookie('token');
       try {
         const response = await axios.post(
           'http://localhost:8002/api/tasks',
-          { name: taskName },
+          { title: taskTitle },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         tasks.value.push(response.data);
@@ -71,19 +74,19 @@ export default {
 
     const openTaskDialog = (task = null) => {
       selectedTask.value = task;
-      taskName.value = task ? task.name : '';
+      taskTitle.value = task ? task.title : '';
       dialogOpen.value = true;
     };
 
     const saveTask = async () => {
       if (selectedTask.value) {
-        selectedTask.value.name = taskName.value;
+        selectedTask.value.title = taskTitle.value;
         await editTask(selectedTask.value);
       } else {
-        await addTask(taskName.value);
+        await addTask(taskTitle.value);
       }
       dialogOpen.value = false;
-      taskName.value = '';
+      taskTitle.value = '';
       selectedTask.value = null;
     };
 
@@ -95,7 +98,7 @@ export default {
       editTask,
       deleteTask,
       dialogOpen,
-      taskName,
+      taskTitle,
       openTaskDialog,
       saveTask,
     };
@@ -122,7 +125,7 @@ export default {
             clickable
             @click="editTask(task)"
           >
-            <q-item-section>{{ task.name }}</q-item-section>
+            <q-item-section>{{ task.title }}</q-item-section>
             <q-item-section side>
               <q-btn
                 icon="delete"
@@ -141,10 +144,35 @@ export default {
   <q-card>
     <q-card-section>
       <q-input
-        v-model="taskName"
-        label="Task Name"
+        v-model="taskTitle"
+        label="Task Title"
         filled
         lazy-rules
+      />
+      <q-input
+        v-model="taskDescription"
+        label="Task Description"
+        filled
+        type="textarea"
+        lazy-rules
+      />
+      <q-select
+      v-model="taskStatus"
+      label="Task Status"
+      :options="[
+        { label: 'Pending', value: 'Pending' },
+        { label: 'In Progress', value: 'in_progress' },
+        { label: 'Completed', value: 'completed' },
+      ]"
+      filled
+      lazy-rules
+      />
+      <q-input
+      v-model="taskDueDate"
+      label="Due Date"
+      filled
+      type="date"
+      lazy-rules
       />
     </q-card-section>
     <q-card-actions align="right">

@@ -36,14 +36,14 @@ export default {
           email: this.email,
           password: this.password,
         });
-        document.cookie = `token=${response.data.token}; HttpOnly`;
+        document.cookie = `token=${response.data.token};`;
         this.$router.push('/tasks');
       } catch (error) {
         console.error('Login failed:', error);
       }
     },
     goToRegister() {
-      window.location.href = '/register';
+      this.$router.push('/register');
     },
   },
 };
