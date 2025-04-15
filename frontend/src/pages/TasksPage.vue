@@ -1,6 +1,7 @@
 <script>
 import { ref } from 'vue';
 import axios from 'axios';
+import { Task } from 'src/models/Task';
 
 export default {
   name: 'TasksPage',
@@ -16,8 +17,10 @@ export default {
         const response = await axios.get('http://localhost:8002/api/tasks', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        tasks.value = response.data;
-        console.log(response.data);
+        tasks.value = response.data.map(
+          (task) => new Task(task.id, task.title, task.description, task.status, task.user_id)
+        );
+
       } catch (error) {
         console.error('Error fetching tasks:', error);
       }
@@ -145,6 +148,31 @@ export default {
         label="Task Title"
         filled
         lazy-rules
+      />
+      <q-input
+        v-model="taskDescription"
+        label="Task Description"
+        filled
+        type="textarea"
+        lazy-rules
+      />
+      <q-select
+      v-model="taskStatus"
+      label="Task Status"
+      :options="[
+        { label: 'Pending', value: 'Pending' },
+        { label: 'In Progress', value: 'in_progress' },
+        { label: 'Completed', value: 'completed' },
+      ]"
+      filled
+      lazy-rules
+      />
+      <q-input
+      v-model="taskDueDate"
+      label="Due Date"
+      filled
+      type="date"
+      lazy-rules
       />
     </q-card-section>
     <q-card-actions align="right">
