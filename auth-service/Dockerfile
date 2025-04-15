@@ -16,10 +16,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy the application code (including artisan)
 COPY auth-service .
 COPY shared /var/shared
+COPY run.sh /tmp
 
 # Rename .env.production to .env
 RUN cp .env.production .env
-
 
 # Install Laravel dependencies
 RUN composer install --no-dev --prefer-dist --no-interaction
@@ -28,8 +28,10 @@ RUN composer install --no-dev --prefer-dist --no-interaction
 RUN chown -R www-data:www-data /var/www && \
     chmod -R 755 /var/www
 
-# Expose the application port
+RUN chmod +x /tmp/run.sh
+
 EXPOSE 8000
 
 # Start Laravel's development server
-CMD php artisan serve --host=0.0.0.0 --port=8000
+# CMD php artisan serve --host=0.0.0.0 --port=8000
+CMD [ "/tmp/run.sh" ]
