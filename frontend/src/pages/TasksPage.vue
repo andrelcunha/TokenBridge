@@ -7,28 +7,28 @@ export default {
   setup() {
     const tasks = ref([]);
     const dialogOpen = ref(false);
-    const taskName = ref('');
+    const taskTitle = ref('');
     const selectedTask = ref(null);
 
     const fetchTasks = async () => {
       const token = getCookie('token');
       try {
-        console.log('Token:', token);
         const response = await axios.get('http://localhost:8002/api/tasks', {
           headers: { Authorization: `Bearer ${token}` },
         });
         tasks.value = response.data;
+        console.log(response.data);
       } catch (error) {
         console.error('Error fetching tasks:', error);
       }
     };
 
-    const addTask = async (taskName) => {
+    const addTask = async (taskTitle) => {
       const token = getCookie('token');
       try {
         const response = await axios.post(
           'http://localhost:8002/api/tasks',
-          { name: taskName },
+          { title: taskTitle },
           { headers: { Authorization: `Bearer ${token}` } }
         );
         tasks.value.push(response.data);
@@ -71,19 +71,19 @@ export default {
 
     const openTaskDialog = (task = null) => {
       selectedTask.value = task;
-      taskName.value = task ? task.name : '';
+      taskTitle.value = task ? task.title : '';
       dialogOpen.value = true;
     };
 
     const saveTask = async () => {
       if (selectedTask.value) {
-        selectedTask.value.name = taskName.value;
+        selectedTask.value.title = taskTitle.value;
         await editTask(selectedTask.value);
       } else {
-        await addTask(taskName.value);
+        await addTask(taskTitle.value);
       }
       dialogOpen.value = false;
-      taskName.value = '';
+      taskTitle.value = '';
       selectedTask.value = null;
     };
 
@@ -95,7 +95,7 @@ export default {
       editTask,
       deleteTask,
       dialogOpen,
-      taskName,
+      taskTitle,
       openTaskDialog,
       saveTask,
     };
@@ -122,7 +122,7 @@ export default {
             clickable
             @click="editTask(task)"
           >
-            <q-item-section>{{ task.name }}</q-item-section>
+            <q-item-section>{{ task.title }}</q-item-section>
             <q-item-section side>
               <q-btn
                 icon="delete"
@@ -141,8 +141,8 @@ export default {
   <q-card>
     <q-card-section>
       <q-input
-        v-model="taskName"
-        label="Task Name"
+        v-model="taskTitle"
+        label="Task Title"
         filled
         lazy-rules
       />
