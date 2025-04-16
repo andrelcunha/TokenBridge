@@ -12,4 +12,3 @@ services:
     container_name: auth-service
     ports:
       - "8001:8000"
-    # entrypoint: ["sh","-c", "sleep 30 && php /var/wwww/artisan migrate && php /var/www/artisan serve --host 0.0.0.0 --port 8000"]
